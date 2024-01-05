@@ -1,7 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using Object = System.Object;
 using Random = UnityEngine.Random;
 
 public class GroundShaker : MonoBehaviour
@@ -11,9 +11,11 @@ public class GroundShaker : MonoBehaviour
     public float slowDownFactor = 0.01f;
 
     private Vector3 originalPosition;
-    private DateTime shakeTimer = DateTime.Now.AddSeconds(10);
-    private DateTime shakeCount = DateTime.Now;
-
+    private Timer timer;
+    private float zamanSayaci = 0f;
+    private readonly float hedefZaman = 30f;
+    private readonly float beklemeZaman = 10f;
+    
     void Start()
     {
         originalPosition = transform.position;
@@ -21,7 +23,8 @@ public class GroundShaker : MonoBehaviour
 
     void Update()
     {
-        if (shakeTimer.Second > shakeCount.Second)
+        zamanSayaci += Time.deltaTime;
+        if (zamanSayaci >= beklemeZaman && zamanSayaci <= hedefZaman)
         {
             // Rastgele değerlerle zemini salla
             Vector2 randomPos = Random.insideUnitCircle * magnitude;
@@ -37,8 +40,6 @@ public class GroundShaker : MonoBehaviour
             Vector3 moveVec = new Vector3(randomX, randomY, randomZ);
 
             transform.position = originalPosition + moveVec;
-
-            shakeCount = DateTime.Now;
         }
         else
         {
